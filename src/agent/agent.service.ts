@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { InitConfig } from '@credo-ts/core'
-import { Agent } from '@credo-ts/core'
+import { Agent, ConnectionsModule, MediationRecipientModule, MediatorPickupStrategy } from '@credo-ts/core'
 import { agentDependencies } from '@credo-ts/node'
 import { AskarModule } from '@credo-ts/askar'
 import { ariesAskar } from '@hyperledger/aries-askar-nodejs'
@@ -10,22 +10,32 @@ import { IndyVdrAnonCredsRegistry, IndyVdrModule } from '@credo-ts/indy-vdr'
 import { indyVdr } from '@hyperledger/indy-vdr-nodejs'
 import { HttpOutboundTransport, WsOutboundTransport } from '@credo-ts/core'
 import { HttpInboundTransport } from '@credo-ts/node'
+import { AgentInitDto } from './dto/agent.init.dto'
+import { ConsoleLogger, LogLevel } from '@credo-ts/core'
+import { AgentWalletDeleteDto } from './dto/agent.walletdelete.dto';
 
 @Injectable()
 export class AgentService {
+    public agents: Map<string, Agent> = new Map();
+    public agent: Agent;
 
-    agent:Agent;
-    init: string = "Agent init success";
+    async agentInit(agentInitDto: AgentInitDto): Promise<string> {
+        const mediatorInvitationUrl:string = process.env.MEDIATOR_INVITATION;
+        console.log("*** Agent Service agentInit");
+        let init = "Agent " + agentInitDto.agentName + " init success";
 
-    async agentInit(): Promise<string> {
-        console.log("Agent Service agentInit");
-        
+        if (this.agents.has(agentInitDto.agentName)) {
+            console.log("Agent already initialized");
+            return init;
+        }
+
         const config: InitConfig = {
             label: 'docs-agent-nodejs',
             walletConfig: {
-              id: 'wallet-id',
+              id: 'wallet-id-' + agentInitDto.agentName,
               key: 'DigiCredTesting00000000000000000',
             },
+            logger: new ConsoleLogger(LogLevel.info),
         }        
 
         try {
@@ -33,13 +43,13 @@ export class AgentService {
                 config,
                 dependencies: agentDependencies,
                 modules: {
-                    // Register the Askar module on the agent
                     askar: new AskarModule({
                         ariesAskar,
                     }),
+                    connections: new ConnectionsModule({ 
+                        autoAcceptConnections: true 
+                    }),
                     anoncreds: new AnonCredsModule({
-                        // Here we add an Indy VDR registry as an example, any AnonCreds registry
-                        // can be used
                         registries: [new IndyVdrAnonCredsRegistry()],
                         anoncreds,
                     }),
@@ -54,6 +64,9 @@ export class AgentService {
                         },
                         ],
                     }),
+                    mediationRecipient: new MediationRecipientModule({
+                        mediatorInvitationUrl
+                    }),
                 }
             })
 
@@ -62,13 +75,29 @@ export class AgentService {
             this.agent.registerInboundTransport(new HttpInboundTransport({ port: 8000 }))
 
             // Initialize the agent
+            //console.log("Agent=", this.agent);
             await this.agent.initialize()
+            this.agents.set(agentInitDto.agentName, this.agent);
+            console.log(init);
+            //console.log("Agent=", this.agents.get(agentInitDto.agentName));
         }
         catch(error) {
             console.log(error);
-            this.init = "Agent init failed with " + error;
+            init = "Agent " + agentInitDto.agentName + " init failed with " + error;
         }
-        return this.init;
+        return init;
     }     
+
+    getAgentByName(agentName: string) {
+        return this.agents.get(agentName);
+    }
+
+    async walletDelete(agentWalletDeleteDto: AgentWalletDeleteDto): Promise<string> {
+        console.log("*** Agent Service: walletDelete");
+        const agent: Agent = await this.getAgentByName(agentWalletDeleteDto.agentName);
+        console.log("Agent wallet= wallet-id-", agentWalletDeleteDto.agentName)
+        const result = agent.wallet.delete()
+        return "Deleted";
+    }
 
 }
