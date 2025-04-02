@@ -9,7 +9,10 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./",                                // ✅ Required for path aliasing
+    "paths": {
+      "src/*": ["src/*"]                            // ✅ Add this for Jest + NestJS compatibility
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

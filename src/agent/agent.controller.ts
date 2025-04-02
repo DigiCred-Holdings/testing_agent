@@ -1,22 +1,23 @@
-import { Controller, Get, Body, Post } from '@nestjs/common';
+import { Controller, Body, Post } from '@nestjs/common';
 import { AgentService } from './agent.service';
-import { AgentInitDto } from './dto/agent.init.dto'
+import { AgentInitDto } from './dto/agent.init.dto';
 import { AgentWalletDeleteDto } from './dto/agent.walletdelete.dto';
 
 @Controller('agent')
 export class AgentController {
-    constructor(private readonly agentService: AgentService) {}
+  constructor(private readonly agentService: AgentService) {}
 
-    @Post('/init')
-    agentInit(@Body() agentInitDto: AgentInitDto): Promise<string> {
-        console.log('Agent Controller called: agentInit');
-        return this.agentService.agentInit(agentInitDto);
-    }
+  @Post('/init')
+  async agentInit(@Body() agentInitDto: AgentInitDto): Promise<{ message: string }> {
+    console.log('Agent Controller called: agentInit');
+    const result = await this.agentService.agentInit(agentInitDto);
+    return { message: result }; // ✅ wrap the string in an object
+  }
 
-    @Post('/delete')
-    walletDelete(@Body() agentWalletDeleteDto: AgentWalletDeleteDto): Promise<string> {
-        console.log('Agent Controller called: walletDelete');
-        return this.agentService.walletDelete(agentWalletDeleteDto);
-    }
-
+  @Post('/delete')
+  async walletDelete(@Body() agentWalletDeleteDto: AgentWalletDeleteDto): Promise<{ message: string }> {
+    console.log('Agent Controller called: walletDelete');
+    const result = await this.agentService.walletDelete(agentWalletDeleteDto);
+    return { message: result }; // ✅ wrap for consistency
+  }
 }

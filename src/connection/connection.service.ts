@@ -31,6 +31,16 @@ export class ConnectionService {
         return outOfBandRecord
     } 
 
+    async studentInvitation(connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<OutOfBandRecord> {
+        console.log("*** Connection Service: receiveInvitation");
+        const agent: Agent = await this.agentService.getAgentByName(connectionReceiveInvitationDto.agentName);
+        console.log("Agent name=", connectionReceiveInvitationDto.agentName)
+        const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(process.env.MULTIUSE_INVITATION);
+
+        await this.setupConnectionListener(connectionReceiveInvitationDto.agentName, outOfBandRecord);
+        return outOfBandRecord
+    } 
+
     async setupConnectionListener(agentName: string, outOfBandRecord: OutOfBandRecord ) {
         console.log("*** Connection Service: setupConnectionListener");
         const agent: Agent = await this.agentService.getAgentByName(agentName);
