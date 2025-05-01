@@ -72,7 +72,7 @@ export class AgentService {
 
             this.agent.registerOutboundTransport(new HttpOutboundTransport())
             this.agent.registerOutboundTransport(new WsOutboundTransport())
-            this.agent.registerInboundTransport(new HttpInboundTransport({ port: 8000 }))
+            this.agent.registerInboundTransport(new HttpInboundTransport({ port: agentInitDto.port }))
 
             // Initialize the agent
             //console.log("Agent=", this.agent);
