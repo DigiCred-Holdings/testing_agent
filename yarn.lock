@@ -67,6 +67,39 @@
     ora "5.4.1"
     rxjs "7.8.1"
 
+"@aries-framework/core@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@aries-framework/core/-/core-0.4.2.tgz#f2118c732d6aff8d6557a15de14381e8782b54a1"
+  integrity sha512-2qmDRkxD5vnPlcMjVTqu/Wxog9bUVU+tSr+7mgANgJ9q170FuoSuChU7WA5VCKEdmbRIM4BmvsnTlU8Y+iQ07A==
+  dependencies:
+    "@digitalcredentials/jsonld" "^5.2.1"
+    "@digitalcredentials/jsonld-signatures" "^9.3.1"
+    "@digitalcredentials/vc" "^1.1.2"
+    "@multiformats/base-x" "^4.0.1"
+    "@stablelib/ed25519" "^1.0.2"
+    "@stablelib/random" "^1.0.1"
+    "@stablelib/sha256" "^1.0.1"
+    "@types/node-fetch" "2.6.2"
+    "@types/ws" "^8.5.4"
+    abort-controller "^3.0.0"
+    big-integer "^1.6.51"
+    borc "^3.0.0"
+    buffer "^6.0.3"
+    class-transformer "0.5.1"
+    class-validator "0.14.0"
+    did-resolver "^4.1.0"
+    lru_map "^0.4.1"
+    luxon "^3.3.0"
+    make-error "^1.3.6"
+    object-inspect "^1.10.3"
+    query-string "^7.0.1"
+    reflect-metadata "^0.1.13"
+    rxjs "^7.2.0"
+    tsyringe "^4.8.0"
+    uuid "^9.0.0"
+    varint "^6.0.0"
+    web-did-resolver "^2.0.21"
+
 "@astronautlabs/jsonpath@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@astronautlabs/jsonpath/-/jsonpath-1.1.2.tgz#af19bb4a7d13dcfbc60c3c998ee1e73d7c2ddc38"
@@ -614,6 +647,15 @@
     "@digitalbazaar/vc-status-list-context" "^3.0.1"
     "@digitalcredentials/bitstring" "^2.0.1"
     "@digitalcredentials/vc" "^4.1.1"
+    credentials-context "^2.0.0"
+
+"@digitalcredentials/vc@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@digitalcredentials/vc/-/vc-1.1.2.tgz#868a56962f5137c29eb51eea1ba60251ebf69ad1"
+  integrity sha512-TSgny9XUh+W7uFjdcpvZzN7I35F9YMTv6jVINXr7UaLNgrinIjy6A5RMGQH9ecpcaoLMemKB5XjtLOOOQ3vknQ==
+  dependencies:
+    "@digitalcredentials/jsonld" "^5.2.1"
+    "@digitalcredentials/jsonld-signatures" "^9.3.1"
     credentials-context "^2.0.0"
 
 "@digitalcredentials/vc@^4.1.1":
@@ -1557,12 +1599,21 @@
   resolved "https://registry.yarnpkg.com/@stablelib/int/-/int-1.0.1.tgz#75928cc25d59d73d75ae361f02128588c15fd008"
   integrity sha512-byr69X/sDtDiIjIV6m4roLVWnNNlRGzsvxw+agj8CIEazqWGOQp2dTYgQhtyVXV9wpO6WyXRQUzLV/JRNumT2w==
 
-"@stablelib/random@^1.0.2":
+"@stablelib/random@^1.0.1", "@stablelib/random@^1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@stablelib/random/-/random-1.0.2.tgz#2dece393636489bf7e19c51229dd7900eddf742c"
   integrity sha512-rIsE83Xpb7clHPVRlBj8qNe5L8ISQOzjghYQm/dZ7VaM2KHYwMW5adjQjrzTZCchFnNCNhkwtnOBa9HTMJCI8w==
   dependencies:
     "@stablelib/binary" "^1.0.1"
+    "@stablelib/wipe" "^1.0.1"
+
+"@stablelib/sha256@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@stablelib/sha256/-/sha256-1.0.1.tgz#77b6675b67f9b0ea081d2e31bda4866297a3ae4f"
+  integrity sha512-GIIH3e6KH+91FqGV42Kcj71Uefd/QEe7Dy42sBTeqppXV95ggCcxLTk39bEr+lZfJmp+ghsR07J++ORkRELsBQ==
+  dependencies:
+    "@stablelib/binary" "^1.0.1"
+    "@stablelib/hash" "^1.0.1"
     "@stablelib/wipe" "^1.0.1"
 
 "@stablelib/sha512@^1.0.1":
@@ -1747,6 +1798,14 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.5.tgz#1ef302e01cf7d2b5a0fa526790c9123bf1d06690"
   integrity sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==
 
+"@types/node-fetch@2.6.2":
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-2.6.2.tgz#d1a9c5fd049d9415dce61571557104dec3ec81da"
+  integrity sha512-DHqhlq5jeESLy19TYhLakJ07kNumXWjcDdxXsLUMJZ6ue8VZJj4kLPQVE/2mdHh3xZziNF1xppu5lwmS53HR+A==
+  dependencies:
+    "@types/node" "*"
+    form-data "^3.0.0"
+
 "@types/node@*", "@types/node@>=18.0.0":
   version "22.13.14"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.13.14.tgz#70d84ec91013dcd2ba2de35532a5a14c2b4cc912"
@@ -1825,6 +1884,11 @@
   version "13.12.3"
   resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.12.3.tgz#af160ddaf1e43ab66fe69473a90b14bb9f435d29"
   integrity sha512-2ipwZ2NydGQJImne+FhNdhgRM37e9lCev99KnqkbFHd94Xn/mErARWI1RSLem1QA19ch5kOhzIZd7e8CA2FI8g==
+
+"@types/validator@^13.7.10":
+  version "13.15.0"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.15.0.tgz#d4643730536900190bb476a1dda0a4897c8881e2"
+  integrity sha512-nh7nrWhLr6CBq9ldtw0wx+z9wKnnv/uTVLA9g/3/TcOYxbpOSZE+MhKPmWqU+K0NvThjhv12uD8MuqijB0WzEA==
 
 "@types/ws@^8.5.4":
   version "8.18.0"
@@ -2686,6 +2750,15 @@ class-transformer@0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.5.1.tgz#24147d5dffd2a6cea930a3250a677addf96ab336"
   integrity sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==
+
+class-validator@0.14.0:
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.14.0.tgz#40ed0ecf3c83b2a8a6a320f4edb607be0f0df159"
+  integrity sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==
+  dependencies:
+    "@types/validator" "^13.7.10"
+    libphonenumber-js "^1.10.14"
+    validator "^13.7.0"
 
 class-validator@0.14.1:
   version "0.14.1"
@@ -3730,6 +3803,16 @@ fork-ts-checker-webpack-plugin@9.0.2:
     schema-utils "^3.1.1"
     semver "^7.3.5"
     tapable "^2.2.1"
+
+form-data@^3.0.0:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-3.0.3.tgz#349c8f2c9d8f8f0c879ee0eb7cc0d300018d6b09"
+  integrity sha512-q5YBMeWy6E2Un0nMGWMgI65MAKtaylxfNJGJxpGh45YDciZB4epbWpaAfImil6CPAPTYB4sh0URQNDRIZG5F2w==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    es-set-tostringtag "^2.1.0"
+    mime-types "^2.1.35"
 
 form-data@^4.0.0:
   version "4.0.2"
@@ -4879,6 +4962,11 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+libphonenumber-js@^1.10.14:
+  version "1.12.8"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.8.tgz#20e5b57f24e60359d795e2fa2ee185776331e34f"
+  integrity sha512-f1KakiQJa9tdc7w1phC2ST+DyxWimy9c3g3yeF+84QtEanJr2K77wAmBPP22riU05xldniHsvXuflnLZ4oysqA==
+
 libphonenumber-js@^1.10.53:
   version "1.12.6"
   resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.12.6.tgz#32a211b976dde3ccdf201c3c0b6e60351167c8bf"
@@ -4961,6 +5049,11 @@ lru_map@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.4.1.tgz#f7b4046283c79fb7370c36f8fca6aee4324b0a98"
   integrity sha512-I+lBvqMMFfqaV8CJCISjI3wbjmwVu/VyOoU7+qtu9d7ioW5klMgsTTiUOUp+DJvfTTzKXoPbyC6YfgkNcyPSOg==
+
+luxon@^3.3.0:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-3.6.1.tgz#d283ffc4c0076cb0db7885ec6da1c49ba97e47b0"
+  integrity sha512-tJLxrKJhO2ukZ5z0gyjY1zPh3Rh88Ej9P7jNrZiHMUXHae1yvI2imgOZtL1TO8TW6biMMKfTtAOoEJANgtWBMQ==
 
 luxon@^3.5.0:
   version "3.6.0"
@@ -5050,7 +5143,7 @@ mime-db@1.52.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
   integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
 
-mime-types@^2.1.12, mime-types@^2.1.27, mime-types@~2.1.24, mime-types@~2.1.34:
+mime-types@^2.1.12, mime-types@^2.1.27, mime-types@^2.1.35, mime-types@~2.1.24, mime-types@~2.1.34:
   version "2.1.35"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
@@ -5853,7 +5946,7 @@ rxjs@7.8.1:
   dependencies:
     tslib "^2.1.0"
 
-rxjs@^7.5.5, rxjs@^7.8.0, rxjs@^7.8.1:
+rxjs@^7.2.0, rxjs@^7.5.5, rxjs@^7.8.0, rxjs@^7.8.1:
   version "7.8.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.2.tgz#955bc473ed8af11a002a2be52071bf475638607b"
   integrity sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==
@@ -6604,7 +6697,7 @@ valibot@0.37.0:
   resolved "https://registry.yarnpkg.com/valibot/-/valibot-0.37.0.tgz#b71f597a581c716f6546a3b53cefd2829b559c55"
   integrity sha512-FQz52I8RXgFgOHym3XHYSREbNtkgSjF9prvMFH1nBsRyfL6SfCzoT1GuSDTlbsuPubM7/6Kbw0ZMQb8A+V+VsQ==
 
-validator@^13.9.0:
+validator@^13.7.0, validator@^13.9.0:
   version "13.15.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-13.15.0.tgz#2dc7ce057e7513a55585109eec29b2c8e8c1aefd"
   integrity sha512-36B2ryl4+oL5QxZ3AzD0t5SsMNGvTtQHpjgFO5tbNxfXbMFkY822ktCDe1MnlqV3301QQI9SLHDNJokDI+Z9pA==

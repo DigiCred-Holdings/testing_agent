@@ -21,6 +21,7 @@
     "test:l2e2": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@aries-framework/core": "^0.4.2",
     "@credo-ts/anoncreds": "^0.5.3",
     "@credo-ts/askar": "^0.5.3",
     "@credo-ts/core": "^0.5.3",
