@@ -1,11 +1,16 @@
 import { ConsoleLogger, Inject, Injectable } from '@nestjs/common';
 import { AgentService } from 'src/agent/agent.service';
-import { Agent, ConnectionEventTypes, ConnectionRecord, ConnectionStateChangedEvent, DidExchangeState, OutOfBandRecord } from '@credo-ts/core'
+import { ConfigService } from '@nestjs/config';
+import { AxiosRequestConfig } from 'axios';
+import { HttpService } from '@nestjs/axios';
+import { lastValueFrom, map } from 'rxjs';
+import { Agent, ConnectionEventTypes, ConnectionRecord, ConnectionStateChangedEvent, CredentialEventTypes, CredentialState, CredentialStateChangedEvent, DidExchangeState, OutOfBandRecord } from '@credo-ts/core'
 import { ConnectionReceiveInvitationDto } from './dto/connection.receiveinvitation.dto'
+import { ConnectionStudentInvitationDto } from './dto/connection.studentinvitation.dto';
 
 @Injectable()
 export class ConnectionService {
-    constructor(private readonly agentService: AgentService) {}
+    constructor(private readonly agentService: AgentService, private readonly configService: ConfigService, private readonly httpService: HttpService) {}
 
     getHello(): string {
         console.log("Connection Service")
@@ -31,13 +36,26 @@ export class ConnectionService {
         return outOfBandRecord
     } 
 
-    async studentInvitation(connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<OutOfBandRecord> {
+    async studentInvitation(connectionReceiveInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
         console.log("*** Connection Service: receiveInvitation");
         const agent: Agent = await this.agentService.getAgentByName(connectionReceiveInvitationDto.agentName);
         console.log("Agent name=", connectionReceiveInvitationDto.agentName)
-        const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(process.env.MULTIUSE_INVITATION);
+        const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(connectionReceiveInvitationDto.invitation_url);
 
         await this.setupConnectionListener(connectionReceiveInvitationDto.agentName, outOfBandRecord);
+        agent.events.on<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged, async ({ payload }) => {
+            switch (payload.credentialRecord.state) {
+              case CredentialState.OfferReceived:
+                console.log('received a credential')
+                // custom logic here
+                await agent.credentials.acceptOffer({ credentialRecordId: payload.credentialRecord.id })
+                break
+              case CredentialState.Done:
+                console.log(`Credential for credential id ${payload.credentialRecord.id} is accepted`)
+                // For demo purposes we exit the program here.
+                process.exit(0)
+            }
+          })
         return outOfBandRecord
     } 
 
@@ -58,5 +76,55 @@ export class ConnectionService {
             }
         );
     }
+
+    private getRequestConfig(): AxiosRequestConfig {
+        return {
+            headers: {
+                Authorization: `Bearer ${this.configService.get<string>('BEARER_TOKEN')}`,
+                'X-API-KEY': this.configService.get<string>('API_KEY'),
+                'Content-Type': 'application/json',
+                accept: 'application/json',
+            },
+        };
+    }
+
+    async createInvitation(connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<any> {
+        console.log("*** Connection Service: createInvitation");
+        const verificationRequestUrl = `${this.configService.get<string>('ADMIN_INTERFACE')}/out-of-band/create-invitation?auto_accept=true`;
+        const verificationRequestConfig: AxiosRequestConfig = this.getRequestConfig();
+
+        try {
+            const data = {
+                "accept": [
+                  "didcomm/aip1",
+                  "didcomm/aip2;env=rfc19"
+                ],
+                "alias": "Michael Jordan -studentID- 0023",
+                "attachments": [],
+                "goal": "",
+                "goal_code": "",
+                "handshake_protocols": [
+                  "https://didcomm.org/didexchange/1.0"
+                ],
+                "metadata": {
+                  "additionalProp1": "0023"
+                },
+                "my_label": connectionReceiveInvitationDto.agentName,
+                "protocol_version": "1.1",
+                "use_public_did": false
+              }  
+            console.log(data);
+            console.log(verificationRequestUrl);
+            console.log(verificationRequestConfig);
+            const invitation = await lastValueFrom(
+                this.httpService.post(verificationRequestUrl, data, verificationRequestConfig).pipe(map((resp) => resp.data)));
+            console.log('Proof request sent successfully');
+            return invitation;
+        } catch (error) {
+            console.log('Error create invitation:', error.message);
+            throw new Error('Failed to send proof request');
+        }
+        return null
+    } 
 
 }

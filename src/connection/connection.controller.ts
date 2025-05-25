@@ -3,6 +3,7 @@ import { ConnectionService } from './connection.service';
 import { ConnectionRecord, OutOfBandRecord } from '@credo-ts/core';
 import { ConnectionReceiveInvitationDto } from './dto/connection.receiveinvitation.dto'
 import { ConnectionGetConnectionsDto } from './dto/connection.getconnections.dto';
+import { ConnectionStudentInvitationDto } from './dto/connection.studentinvitation.dto';
 
 @Controller('connection')
 export class ConnectionController {
@@ -29,9 +30,13 @@ export class ConnectionController {
 
 
     @Post('/studentinvite')
-    async studentInvitation(@Body() connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<OutOfBandRecord> {
+    async studentInvitation(@Body() connectionReceiveInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
         return await this.connectionService.receiveInvitation(connectionReceiveInvitationDto);
     }
 
+    @Post('/createinvite')
+    async createInvitation(@Body() connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<any> {
+        return await this.connectionService.createInvitation(connectionReceiveInvitationDto);
+    }
 
 }
