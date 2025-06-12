@@ -26,12 +26,9 @@ export class ConnectionController {
         return await this.connectionService.receiveInvitation(connectionReceiveInvitationDto);
     }
 
-
-
-
     @Post('/studentinvite')
     async studentInvitation(@Body() connectionReceiveInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
-        return await this.connectionService.receiveInvitation(connectionReceiveInvitationDto);
+        return await this.connectionService.receiveStudentInvitation(connectionReceiveInvitationDto);
     }
 
     @Post('/createinvite')

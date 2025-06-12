@@ -36,13 +36,23 @@ export class ConnectionService {
         return outOfBandRecord
     } 
 
-    async studentInvitation(connectionReceiveInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
+    async receiveStudentInvitation(connectionReceiveInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
         console.log("*** Connection Service: receiveInvitation");
         const agent: Agent = await this.agentService.getAgentByName(connectionReceiveInvitationDto.agentName);
         console.log("Agent name=", connectionReceiveInvitationDto.agentName)
         const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(connectionReceiveInvitationDto.invitation_url);
 
         await this.setupConnectionListener(connectionReceiveInvitationDto.agentName, outOfBandRecord);
+        return outOfBandRecord
+    } 
+
+    async studentInvitation(connectionStudentInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
+        console.log("*** Connection Service: receiveSingleInvitation");
+        const agent: Agent = await this.agentService.getAgentByName(connectionStudentInvitationDto.agentName);
+        console.log("Agent name=", connectionStudentInvitationDto.agentName)
+        const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(connectionStudentInvitationDto.invitation_url);
+
+        await this.setupConnectionListener(connectionStudentInvitationDto.agentName, outOfBandRecord);
         agent.events.on<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged, async ({ payload }) => {
             switch (payload.credentialRecord.state) {
               case CredentialState.OfferReceived:
@@ -90,41 +100,49 @@ export class ConnectionService {
 
     async createInvitation(connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<any> {
         console.log("*** Connection Service: createInvitation");
-        const verificationRequestUrl = `${this.configService.get<string>('ADMIN_INTERFACE')}/out-of-band/create-invitation?auto_accept=true`;
+        //const verificationRequestUrl = `${this.configService.get<string>('ADMIN_INTERFACE')}/out-of-band/create-invitation?multi_use=false&auto_accept=true`;
+        const verificationRequestUrl = `${this.configService.get<string>('ADMIN_INTERFACE')}/out-of-band/create-invitation?multi_use=false&auto_accept=true`;
+        //const verificationRequestUrl = `${this.configService.get<string>('ADMIN_INTERFACE')}/connections/create-invitation?alias=MichaelJordanstudentID0023&multi_use=false&auto_accept=true`;
+        //const verificationRequestUrl = `${this.configService.get<string>('ADMIN_INTERFACE')}/connections/create-invitation?alias=` + connectionReceiveInvitationDto.agentName + Date.now() + `&multi_use=false&auto_accept=true`;
         const verificationRequestConfig: AxiosRequestConfig = this.getRequestConfig();
 
         try {
             const data = {
-                "accept": [
-                  "didcomm/aip1",
-                  "didcomm/aip2;env=rfc19"
-                ],
-                "alias": "Michael Jordan -studentID- 0023",
-                "attachments": [],
-                "goal": "",
-                "goal_code": "",
-                "handshake_protocols": [
-                  "https://didcomm.org/didexchange/1.0"
-                ],
-                "metadata": {
-                  "additionalProp1": "0023"
-                },
-                "my_label": connectionReceiveInvitationDto.agentName,
-                "protocol_version": "1.1",
-                "use_public_did": false
-              }  
-            console.log(data);
+                                "accept": [
+                                  "didcomm/aip1",
+                                  "didcomm/aip2;env=rfc19"
+                                ],
+                                "alias": "Michael Jordan -studentID- 0023",
+                                "attachments": [],
+                                "goal": "",
+                                "goal_code": "",
+                                "handshake_protocols": [
+                                  "https://didcomm.org/didexchange/1.0"
+                                ],
+                                "metadata": {
+                                  "additionalProp1": "0023"
+                                },
+                                "my_label": connectionReceiveInvitationDto.agentName,
+                                "protocol_version": "1.1",
+                                "use_public_did": false
+                              }  
+                            console.log(data);
+                
             console.log(verificationRequestUrl);
             console.log(verificationRequestConfig);
             const invitation = await lastValueFrom(
-                this.httpService.post(verificationRequestUrl, data, verificationRequestConfig).pipe(map((resp) => resp.data)));
-            console.log('Proof request sent successfully');
+            this.httpService.post(verificationRequestUrl, data, verificationRequestConfig).pipe(map((resp) => resp.data)));
+            console.log('Proof request sent successfully here');
+            console.log(invitation.invitation_url);
+            //const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(invitation.invitation_url);
+    
+            //await this.setupConnectionListener(connectionReceiveInvitationDto.agentName, outOfBandRecord);
             return invitation;
         } catch (error) {
             console.log('Error create invitation:', error.message);
             throw new Error('Failed to send proof request');
         }
-        return null
+        return null;
     } 
 
 }
