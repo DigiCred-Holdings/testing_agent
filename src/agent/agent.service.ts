@@ -36,7 +36,7 @@ export class AgentService {
               id: 'wallet-id-' + agentInitDto.agentName,
               key: 'DigiCredTesting00000000000000000',
             },
-            logger: new ConsoleLogger(LogLevel.error),
+            logger: new ConsoleLogger(LogLevel.info),
            // autoAcceptCredentials: AutoAcceptCredential.ContentApproved
         }        
 
