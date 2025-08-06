@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { AxiosRequestConfig } from 'axios';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom, map } from 'rxjs';
-import { Agent, ConnectionEventTypes, ConnectionRecord, ConnectionStateChangedEvent, CredentialEventTypes, CredentialState, CredentialStateChangedEvent, DidExchangeState, OutOfBandRecord } from '@credo-ts/core'
+import { Agent, ConnectionEventTypes, ConnectionRecord, ConnectionStateChangedEvent, DidExchangeState, OutOfBandRecord } from '@credo-ts/core'
 import { ConnectionReceiveInvitationDto } from './dto/connection.receiveinvitation.dto'
 import { ConnectionStudentInvitationDto } from './dto/connection.studentinvitation.dto';
 
@@ -18,7 +18,7 @@ export class ConnectionService {
     }    
 
     async getConnections(connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<ConnectionRecord[]> {
-        console.log("*** Connection Service: receiveInvitation");
+        console.log("*** Connection Service: getConnections");
         const agent: Agent = await this.agentService.getAgentByName(connectionReceiveInvitationDto.agentName);
         console.log("Agent name=", connectionReceiveInvitationDto.agentName)
 
@@ -37,7 +37,7 @@ export class ConnectionService {
     } 
 
     async receiveStudentInvitation(connectionReceiveInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
-        console.log("*** Connection Service: receiveInvitation");
+        console.log("*** Connection Service: receiveStudentInvitation");
         const agent: Agent = await this.agentService.getAgentByName(connectionReceiveInvitationDto.agentName);
         console.log("Agent name=", connectionReceiveInvitationDto.agentName)
         const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(connectionReceiveInvitationDto.invitation_url);
@@ -47,25 +47,12 @@ export class ConnectionService {
     } 
 
     async studentInvitation(connectionStudentInvitationDto: ConnectionStudentInvitationDto): Promise<OutOfBandRecord> {
-        console.log("*** Connection Service: receiveSingleInvitation");
+        console.log("*** Connection Service: studentInvitation");
         const agent: Agent = await this.agentService.getAgentByName(connectionStudentInvitationDto.agentName);
         console.log("Agent name=", connectionStudentInvitationDto.agentName)
         const { outOfBandRecord } = await agent.oob.receiveInvitationFromUrl(connectionStudentInvitationDto.invitation_url);
 
         await this.setupConnectionListener(connectionStudentInvitationDto.agentName, outOfBandRecord);
-        agent.events.on<CredentialStateChangedEvent>(CredentialEventTypes.CredentialStateChanged, async ({ payload }) => {
-            switch (payload.credentialRecord.state) {
-              case CredentialState.OfferReceived:
-                console.log('received a credential')
-                // custom logic here
-                await agent.credentials.acceptOffer({ credentialRecordId: payload.credentialRecord.id })
-                break
-              case CredentialState.Done:
-                console.log(`Credential for credential id ${payload.credentialRecord.id} is accepted`)
-                // For demo purposes we exit the program here.
-                process.exit(0)
-            }
-          })
         return outOfBandRecord
     } 
 
@@ -75,7 +62,7 @@ export class ConnectionService {
         console.log("Agent name=", agentName)
         agent.events.on<ConnectionStateChangedEvent>(
             ConnectionEventTypes.ConnectionStateChanged, ({ payload }) => {
-                console.log('~~ ConnectionStateChange=', payload);
+                console.log('=== ConnectionStateChange=', payload);
                 if (payload.connectionRecord.outOfBandId !== outOfBandRecord.id) 
                     return;
                 if (payload.connectionRecord.state === DidExchangeState.Completed) {
