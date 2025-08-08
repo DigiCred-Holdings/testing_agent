@@ -20,6 +20,10 @@ export class ConnectionController {
         return await this.connectionService.getConnections(connectionGetConnectionsDto);
     }
 
+    @Post('/mostrecentconnection')
+    async getMostRecentConnection(@Body() connectionGetConnectionsDto: ConnectionGetConnectionsDto): Promise<string> {
+        return await this.connectionService.getMostRecentConnection(connectionGetConnectionsDto);
+    }
 
     @Post('/invite')
     async receiveInvitation(@Body() connectionReceiveInvitationDto: ConnectionReceiveInvitationDto): Promise<OutOfBandRecord> {

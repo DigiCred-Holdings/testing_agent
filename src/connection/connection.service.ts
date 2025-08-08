@@ -7,6 +7,7 @@ import { lastValueFrom, map } from 'rxjs';
 import { Agent, ConnectionEventTypes, ConnectionRecord, ConnectionStateChangedEvent, DidExchangeState, OutOfBandRecord } from '@credo-ts/core'
 import { ConnectionReceiveInvitationDto } from './dto/connection.receiveinvitation.dto'
 import { ConnectionStudentInvitationDto } from './dto/connection.studentinvitation.dto';
+import { ConnectionGetConnectionsDto } from './dto/connection.getconnections.dto';
 
 @Injectable()
 export class ConnectionService {
@@ -123,5 +124,30 @@ export class ConnectionService {
         }
         return null
     } 
+
+    async getMostRecentConnection(connectionGetConnectionsDto: ConnectionGetConnectionsDto): Promise<string> {
+        console.log("*** Connection Service: getMostRecentConnection");
+        const agent: Agent = await this.agentService.getAgentByName(connectionGetConnectionsDto.agentName);
+        console.log("Agent name=", connectionGetConnectionsDto.agentName)
+
+        const cons = await agent.connections.getAll();
+
+        // Find most recent credential with the state of done
+        let mostRecentId = "";
+        let mostRecentDate = new Date("January 1, 2025");
+        cons.forEach((item, index) => {
+            if(item.state==='completed') {
+                if(item.createdAt > mostRecentDate) {
+                    mostRecentId = item.id;
+                    mostRecentDate = item.createdAt;
+                }
+            }
+        })
+
+        // If a connection was found then return the connectionID
+        console.log("Most recent completed Connection ID=", mostRecentId);
+        return mostRecentId;
+    }
+
 
 }
